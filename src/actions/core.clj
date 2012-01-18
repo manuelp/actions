@@ -1,4 +1,5 @@
 (ns actions.core)
+(use '[clojure.string :only (join)])
 
 (defn write-data [tasks file-name]
   (spit file-name tasks))
@@ -6,7 +7,7 @@
 (defn read-data [file-name]
   (read-string (slurp file-name)))
 
-;(def actions (ref []))
+(def actions (ref []))
 
 (defn new-action [description tags]
   (dosync (alter actions conj {:description description :tags tags :done false})))
@@ -18,10 +19,9 @@
   (dosync (ref-set actions (read-data "actions.data"))))
 
 (defn format-tags [tags]
-  (loop [res (name (first tags)) t (rest tags)]
-    (if (empty? (rest t))
-      res
-      (recur (str res "," (name (first t))) (rest t)))))
+  (join \, (map (fn [sym]
+                         (name sym))
+                       tags)))
 
 (defn format-action [action]
   (if (:done action)
