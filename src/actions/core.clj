@@ -18,12 +18,20 @@
 (defn load-actions []
   (dosync (ref-set actions (read-data "actions.data"))))
 
+(load-actions)
+
 (defn format-tags [tags]
   (join \, (map (fn [sym]
-                         (name sym))
-                       tags)))
+                  (name sym))
+                tags)))
 
 (defn format-action [action]
   (if (:done action)
-    (str "[x] " (:description action) " (" (format-tags action ")"))
-    (str "[ ] " (:description action) " (" (format-tags action ")"))))
+    (str "[x] " (action :description) " (" (format-tags (action :tags)) ")")
+    (str "[ ] " (action :description) " (" (format-tags (action :tags)) ")")))
+
+(defn print-actions []
+  (println (join \newline (map format-action @actions))))
+
+;; Test
+(print-actions)
