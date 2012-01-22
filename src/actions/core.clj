@@ -1,9 +1,6 @@
 (ns actions.core)
 (use '[clojure.string :only (join)])
 
-(defn whole-numbers []
-  (iterate inc 1))
-
 (defn write-data [tasks file-name]
   (spit file-name tasks))
 
@@ -34,12 +31,12 @@
     (str "[ ] " (action :description) " (" (format-tags (action :tags)) ")")))
 
 (defn numerize [coll]
-  (loop [res [] c coll nums (whole-numbers)]
+  (loop [res [] c coll num 1]
     (if (empty? c)
       res
-      (recur (conj res (str (first nums) ": " (first c)))
+      (recur (conj res (str num ": " (first c)))
              (rest c)
-             (rest nums)))))
+             (inc num)))))
 
 (defn print-actions []
   (println (join \newline (numerize (map format-action @actions)))))
