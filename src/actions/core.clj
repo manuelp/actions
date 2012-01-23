@@ -27,7 +27,7 @@
     (str (action :id) ": [ ] " (action :description) " (" (format-tags (action :tags)) ")")))
 
 (defn print-actions [actions]
-  (println (join \newline (map format-action (sort-by #(:description %) actions)))))
+  (println (join \newline (map format-action (sort-by #(:description %) (filter (fn [a] (not (a :done))) actions))))))
 
 (defn next-id [actions]
   (if (empty? actions)
