@@ -39,7 +39,7 @@
     (str (action :id) ": [ ] " (action :description) " (" (format-tags (action :tags)) ")")))
 
 (defn print-actions []
-  (println (join \newline (map format-action @actions))))
+  (println (join \newline (map format-action (sort-by #(:description %) @actions)))))
 
 (defn mark-done [id]
   (dosync (ref-set actions (map (fn [a]
