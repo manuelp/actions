@@ -41,5 +41,12 @@
 (defn print-actions []
   (println (join \newline (map format-action @actions))))
 
+(defn mark-done [id]
+  (dosync (ref-set actions (map (fn [a]
+                                  (if (= (:id a) 1)
+                                    (assoc a :done true)
+                                    a))
+                                @actions))))
+
 ;; Test
 (print-actions)
