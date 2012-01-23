@@ -5,12 +5,20 @@
   (spit file-name tasks))
 
 (defn read-data [file-name]
-  (read-string (slurp file-name)))
+  (let [data (slurp file-name)]
+    (if (not (empty? data))
+      (read-string data)
+      [])))
 
 (def actions (ref []))
 
+(defn next-id []
+  (if (empty? @actions)
+    1
+    (inc (apply max (map #(:id %) @actions)))))
+
 (defn new-action [description tags]
-  (dosync (alter actions conj {:description description :tags tags :done false})))
+  (dosync (alter actions conj {:id (next-id) :description description :tags tags :done false})))
 
 (defn save-actions []
   (write-data @actions "actions.data"))
@@ -27,19 +35,11 @@
 
 (defn format-action [action]
   (if (:done action)
-    (str "[x] " (action :description) " (" (format-tags (action :tags)) ")")
-    (str "[ ] " (action :description) " (" (format-tags (action :tags)) ")")))
-
-(defn numerize [coll]
-  (loop [res [] c coll num 1]
-    (if (empty? c)
-      res
-      (recur (conj res (str num ": " (first c)))
-             (rest c)
-             (inc num)))))
+    (str (action :id)  ": [x] " (action :description) " (" (format-tags (action :tags)) ")")
+    (str (action :id) ": [ ] " (action :description) " (" (format-tags (action :tags)) ")")))
 
 (defn print-actions []
-  (println (join \newline (numerize (map format-action @actions)))))
+  (println (join \newline (map format-action @actions))))
 
 ;; Test
 (print-actions)
