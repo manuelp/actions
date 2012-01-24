@@ -1,33 +1,12 @@
 (ns actions.core
-  (:require [clojure.string :only join]))
-
-(defn write-data [tasks file-name]
-  (spit file-name tasks))
-
-(defn read-data [file-name]
-  (let [data (slurp file-name)]
-    (if (not (empty? data))
-      (read-string data)
-      [])))
+  (:require [actions.spitfile :as out]
+            [actions.console :as ui]))
 
 (defn save-actions [actions]
-  (write-data (vec actions) "actions.data"))
+  (out/write-data (vec actions) "actions.data"))
 
 (defn load-actions []
-  (read-data "actions.data"))
-
-(defn format-tags [tags]
-  (join \, (map (fn [sym]
-                  (name sym))
-                tags)))
-
-(defn format-action [action]
-  (if (:done action)
-    (str (action :id)  ": [x] " (action :description) " (" (format-tags (action :tags)) ")")
-    (str (action :id) ": [ ] " (action :description) " (" (format-tags (action :tags)) ")")))
-
-(defn print-actions [actions]
-  (println (join \newline (map format-action (sort-by #(:description %) (filter (fn [a] (not (a :done))) actions))))))
+  (out/read-data "actions.data"))
 
 (defn next-id [actions]
   (if (empty? actions)
@@ -60,4 +39,4 @@
 (defn remove-action [id actions]
   (filter #(not (= id (% :id))) actions))
 
-(print-actions (load-actions))
+(ui/print-actions (load-actions))
