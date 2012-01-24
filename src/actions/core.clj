@@ -1,5 +1,5 @@
-(ns actions.core)
-(use '[clojure.string :only (join)])
+(ns actions.core
+  (:require [clojure.string :only join]))
 
 (defn write-data [tasks file-name]
   (spit file-name tasks))
