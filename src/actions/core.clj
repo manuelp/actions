@@ -37,17 +37,23 @@
 (defn add-action [description tags actions]
   (conj actions {:id (next-id actions) :description description :tags tags :done false}))
 
-(defn mark-done [id actions]
+(defn mark-done [action]
+  (assoc action :done true))
+
+(defn change-description [action new-desc]
+  (assoc action :description new-desc))
+
+(defn finish-action [id actions]
   (vec (map (fn [a]
          (if (= (:id a) id)
-           (assoc a :done true)
+           (mark-done a)
            a))
        actions)))
 
 (defn edit-action [id new-desc actions]
   (vec (map (fn [a]
          (if (= (:id a) id)
-           (assoc a :description new-desc)
+           (change-description a new-desc)
            a))
        actions)))
 
