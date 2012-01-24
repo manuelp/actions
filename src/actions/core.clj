@@ -13,8 +13,19 @@
     1
     (inc (apply max (map #(:id %) actions)))))
 
-(defn add-action [description tags actions]
-  (conj actions {:id (next-id actions) :description description :tags tags :done false}))
+(defn add-action
+  ([actions description]
+     (conj actions {:id (next-id actions)
+                    :description description
+                    :priority nil
+                    :tags []
+                    :done false}))
+  ([actions description priority tags]
+     (conj actions {:id (next-id actions)
+                    :description description
+                    :priority priority
+                    :tags tags
+                    :done false})))
 
 (defn mark-done [action]
   (assoc action :done true))

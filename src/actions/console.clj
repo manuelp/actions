@@ -11,6 +11,7 @@
     (str (action :id)  ": [x] " (action :description) " (" (format-tags (action :tags)) ")")
     (str (action :id) ": [ ] " (action :description) " (" (format-tags (action :tags)) ")")))
 
+; TODO Sort by priority
 (defn print-actions [actions]
   (println (join \newline
                  (map format-action
