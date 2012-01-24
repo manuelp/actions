@@ -57,4 +57,7 @@
            a))
        actions)))
 
+(defn remove-action [id actions]
+  (filter #(not (= id (% :id))) actions))
+
 (print-actions (load-actions))
