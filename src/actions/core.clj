@@ -44,4 +44,11 @@
            a))
        actions)))
 
+(defn edit-action [id new-desc actions]
+  (vec (map (fn [a]
+         (if (= (:id a) id)
+           (assoc a :description new-desc)
+           a))
+       actions)))
+
 (print-actions (load-actions))
