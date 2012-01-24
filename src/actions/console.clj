@@ -11,8 +11,8 @@
     (str (action :id)  ": [x] " (action :description) " (" (format-tags (action :tags)) ")")
     (str (action :id) ": [ ] " (action :description) " (" (format-tags (action :tags)) ")")))
 
-; TODO: Reader macro in place of explicit fn
 (defn print-actions [actions]
-  (println (join \newline (map format-action
-                               (sort-by #(:description %)
-                                        (filter (fn [a] (not (a :done))) actions))))))
+  (println (join \newline
+                 (map format-action
+                      (sort-by #(:description %)
+                               (filter #(not (% :done)) actions))))))
