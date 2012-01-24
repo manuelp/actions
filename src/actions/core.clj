@@ -11,7 +11,7 @@
       [])))
 
 (defn save-actions [actions]
-  (write-data actions "actions.data"))
+  (write-data (vec actions) "actions.data"))
 
 (defn load-actions []
   (read-data "actions.data"))
@@ -44,18 +44,18 @@
   (assoc action :description new-desc))
 
 (defn finish-action [id actions]
-  (vec (map (fn [a]
+  (map (fn [a]
          (if (= (:id a) id)
            (mark-done a)
            a))
-       actions)))
+       actions))
 
 (defn edit-action [id new-desc actions]
-  (vec (map (fn [a]
+  (map (fn [a]
          (if (= (:id a) id)
            (change-description a new-desc)
            a))
-       actions)))
+       actions))
 
 (defn remove-action [id actions]
   (filter #(not (= id (% :id))) actions))
