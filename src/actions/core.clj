@@ -1,5 +1,5 @@
 (ns actions.core
-  (:require [actions.spitfile :as out]
+  (:require :reload [actions.spitfile :as out]
             [actions.console :as ui]))
 
 (defn save-actions [actions]

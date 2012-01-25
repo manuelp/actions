@@ -1,19 +1,17 @@
 (ns actions.console
-  (:require [clojure.string :only join]))
+  (:require [clojure.string :as str]))
 
 (defn format-tags [tags]
-  (join \, (map (fn [sym]
+  (str/join \, (map (fn [sym]
                   (name sym))
                 tags)))
 
 (defn format-action [action]
-  (if (:done action)
-    (str (action :id)  ": [x] " (action :description) " (" (format-tags (action :tags)) ")")
-    (str (action :id) ": [ ] " (action :description) " (" (format-tags (action :tags)) ")")))
+  (str (action :id) " (" (action :priority) ") " (action :description) " (" (format-tags (action :tags)) ")"))
 
-; TODO Sort by priority
 (defn print-actions [actions]
-  (println (join \newline
+  (println (str/join \newline
                  (map format-action
                       (sort-by #(:description %)
-                               (filter #(not (% :done)) actions))))))
+                               (sort-by #(:priority %)
+                                        (filter #(not (% :done)) actions)))))))
