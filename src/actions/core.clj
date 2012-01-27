@@ -30,6 +30,15 @@
 (defn mark-done [action]
   (assoc action :done true))
 
+(defn deprioritize-action [action]
+  (dissoc action :priority))
+
+(defn deprioritize [id actions]
+  (map #(if (= (:id %) id)
+          (deprioritize-action %)
+          %)
+       actions))
+
 (defn change-description [action new-desc]
   (assoc action :description new-desc))
 
