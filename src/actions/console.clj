@@ -2,19 +2,21 @@
   (:require [clojure.string :as str]))
 
 (defn format-tags [tags]
-  (str/join \, (map (fn [sym] (name sym)) tags)))
+  (str/join " " (map #(str "+" (name %)) tags)))
 
 (defn format-contexts [ctxs]
-  (str/join \, (map #(str "@" %) ctxs)))
+  (str/join " " (map #(str "@" %) ctxs)))
 
-(defn format-action [action]
-  (str (action :id)
-       (if (contains? action :priority)
-         (str " (" (action :priority) ") ")
-         " ")
+(defn format-todotxt [action]
+  (str (action :id) " "
+       (if (action :done) "x ")
+       (if (action :priority)
+         (str "(" (action :priority) ") "))
        (action :description)
-       " (" (format-tags (action :tags)) ")"
-       " (" (format-contexts (action :contexts)) ")"))
+       (if (not (empty? (action :tags)))
+         (str " " (format-tags (action :tags))))
+       (if (not (empty? (action :contexts)))
+         (str " " (format-contexts (action :contexts))))))
 
 (defn take-with-priority [actions]
   (filter #(not (nil? (:priority %))) actions))
@@ -30,4 +32,4 @@
 
 (defn print-actions [actions]
   (println (str/join \newline
-                 (map format-action (sort-actions (filter #(not (% :done)) actions))))))
+                 (map format-todotxt (sort-actions (filter #(not (% :done)) actions))))))
