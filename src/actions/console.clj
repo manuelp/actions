@@ -7,7 +7,11 @@
                 tags)))
 
 (defn format-action [action]
-  (str (action :id) " (" (action :priority) ") " (action :description) " (" (format-tags (action :tags)) ")"))
+  (str (action :id)
+       (if (contains? action :priority)
+         (str " (" (action :priority) ") ")
+         " ")
+       (action :description) " (" (format-tags (action :tags)) ")"))
 
 (defn take-with-priority [actions]
   (filter #(not (nil? (:priority %))) actions))
