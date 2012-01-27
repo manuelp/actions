@@ -19,12 +19,14 @@
                     :description description
                     :priority nil
                     :tags []
+                    :contexts []
                     :done false}))
-  ([actions description priority tags]
+  ([actions description priority tags contexts]
      (conj actions {:id (next-id actions)
                     :description description
                     :priority priority
                     :tags tags
+                    :contexts contexts
                     :done false})))
 
 (defn mark-done [action]

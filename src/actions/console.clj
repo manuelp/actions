@@ -2,16 +2,19 @@
   (:require [clojure.string :as str]))
 
 (defn format-tags [tags]
-  (str/join \, (map (fn [sym]
-                  (name sym))
-                tags)))
+  (str/join \, (map (fn [sym] (name sym)) tags)))
+
+(defn format-contexts [ctxs]
+  (str/join \, (map #(str "@" %) ctxs)))
 
 (defn format-action [action]
   (str (action :id)
        (if (contains? action :priority)
          (str " (" (action :priority) ") ")
          " ")
-       (action :description) " (" (format-tags (action :tags)) ")"))
+       (action :description)
+       " (" (format-tags (action :tags)) ")"
+       " (" (format-contexts (action :contexts)) ")"))
 
 (defn take-with-priority [actions]
   (filter #(not (nil? (:priority %))) actions))
