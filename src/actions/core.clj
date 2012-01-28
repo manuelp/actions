@@ -3,10 +3,10 @@
             [actions.todotxt :as todotxt]))
 
 (defn save-actions [actions]
-  (out/write-data (vec actions) "actions.data"))
+  (todotxt/write-data actions "todo.txt"))
 
 (defn load-actions []
-  (out/read-data "actions.data"))
+  (todotxt/read-data "todo.txt"))
 
 (defn next-id [actions]
   (if (empty? actions)

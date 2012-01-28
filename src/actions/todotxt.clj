@@ -1,5 +1,6 @@
 (ns actions.todotxt
   (:require [clojure.string :as str]
+            [clojure.java.io :as io]
             [actions.core :as core]))
 
 (defn format-tags [tags]
@@ -31,9 +32,12 @@
     (concat (sort-by #(vec (map % [:priority :description])) with-p)
             (sort-by :description without-p))))
 
+(defn format-actions [actions]
+  (str/join \newline
+            (map format-action (sort-actions (filter #(not (% :done)) actions)))))
+
 (defn print-actions [actions]
-  (println (str/join \newline
-                 (map format-action (sort-actions (filter #(not (% :done)) actions))))))
+  (println (format-actions actions)))
 
 (defn project? [str]
   (= \+ (first str)))
@@ -59,3 +63,16 @@
                        (take-priority (first tokens)))
                      (filter project? tokens)
                      (filter context? tokens))))
+
+(defn read-actions [lines]
+  (loop [rem lines res []]
+    (if (empty? rem)
+      res
+      (recur (rest rem) (read-action res (first rem))))))
+
+(defn write-data [tasks file-name]
+  (spit file-name tasks))
+
+(defn read-data [file-name]
+  (with-open [rdr (io/reader file-name)]
+    (read-actions (filter (complement empty?) (line-seq rdr)))))
