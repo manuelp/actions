@@ -1,6 +1,6 @@
 (ns actions.core
   (:require :reload [actions.spitfile :as out]
-            [actions.console :as ui]))
+            [actions.todotxt :as todotxt]))
 
 (defn save-actions [actions]
   (out/write-data (vec actions) "actions.data"))
@@ -61,4 +61,8 @@
 (defn remove-action [id actions]
   (filter #(not (= id (% :id))) actions))
 
-(ui/print-actions (load-actions))
+(defn print-actions [actions]
+  (println (str/join \newline
+                 (map format-todotxt (sort-actions (filter #(not (% :done)) actions))))))
+
+(print-actions (load-actions))

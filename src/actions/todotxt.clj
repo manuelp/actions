@@ -1,4 +1,4 @@
-(ns actions.console
+(ns actions.todotxt
   (:require [clojure.string :as str]))
 
 (defn format-tags [tags]
@@ -29,7 +29,3 @@
         without-p (take-without-priority actions)]
     (concat (sort-by #(vec (map % [:priority :description])) with-p)
             (sort-by :description without-p))))
-
-(defn print-actions [actions]
-  (println (str/join \newline
-                 (map format-todotxt (sort-actions (filter #(not (% :done)) actions))))))
