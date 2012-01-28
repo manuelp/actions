@@ -61,8 +61,4 @@
 (defn remove-action [id actions]
   (filter #(not (= id (% :id))) actions))
 
-(defn print-actions [actions]
-  (println (str/join \newline
-                 (map format-todotxt (sort-actions (filter #(not (% :done)) actions))))))
-
-(print-actions (load-actions))
+(todotxt/print-actions (load-actions))
