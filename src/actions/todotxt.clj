@@ -76,7 +76,7 @@
       (recur (rest rem) (conj res (read-action (first rem) nextid)) (inc nextid)))))
 
 (defn write-data [tasks file-name]
-  (spit file-name tasks))
+  (spit file-name (s/join \newline (map #(get % :description) tasks))))
 
 (defn read-data [file-name]
   (with-open [rdr (io/reader file-name)]
