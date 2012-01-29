@@ -53,6 +53,11 @@
 (defn take-priority [s]
   (first (rest s)))
 
+(defn format-id [id]
+  (if (< id 10)
+    (str \0 id)
+    id))
+
 (defn read-action
   "Create an action from a string read using the todo.txt format."
   [str nextid]
@@ -62,7 +67,7 @@
                    (take-priority (first tokens)))
                  (filter project? tokens)
                  (filter context? tokens))
-      :id nextid)))
+      :id (format-id nextid))))
 
 (defn read-actions [lines]
   (loop [rem lines res [] nextid 1]
