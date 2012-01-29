@@ -55,19 +55,20 @@
 
 (defn read-action
   "Create an action from a string read using the todo.txt format."
-  [str]
+  [str nextid]
   (let [tokens (s/split str #"\s")]
-    (new-action str
-                (if (priority? (first tokens))
-                  (take-priority (first tokens)))
-                (filter project? tokens)
-                (filter context? tokens))))
+    (assoc (new-action str
+                 (if (priority? (first tokens))
+                   (take-priority (first tokens)))
+                 (filter project? tokens)
+                 (filter context? tokens))
+      :id nextid)))
 
 (defn read-actions [lines]
-  (loop [rem lines res []]
+  (loop [rem lines res [] nextid 1]
     (if (empty? rem)
       res
-      (recur (rest rem) (conj res (read-action (first rem)))))))
+      (recur (rest rem) (conj res (read-action (first rem) nextid)) (inc nextid)))))
 
 (defn write-data [tasks file-name]
   (spit file-name tasks))
