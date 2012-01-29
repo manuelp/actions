@@ -9,8 +9,13 @@
 (defn format-contexts [ctxs]
   (s/join " " (map #(str "@" %) ctxs)))
 
+(defn format-id [id]
+  (if (< id 10)
+    (str \0 id)
+    id))
+
 (defn format-action [action]
-  (str (action :id) " "
+  (str (format-id (action :id)) " "
        (if (action :done) (str "x " (action :doneDate) " "))
        (if (action :priority)
          (str "(" (action :priority) ") "))
@@ -53,11 +58,6 @@
 (defn take-priority [s]
   (first (rest s)))
 
-(defn format-id [id]
-  (if (< id 10)
-    (str \0 id)
-    id))
-
 (defn read-action
   "Create an action from a string read using the todo.txt format."
   [str nextid]
@@ -67,7 +67,7 @@
                    (take-priority (first tokens)))
                  (filter project? tokens)
                  (filter context? tokens))
-      :id (format-id nextid))))
+      :id nextid)))
 
 (defn read-actions [lines]
   (loop [rem lines res [] nextid 1]
