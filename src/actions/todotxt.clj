@@ -11,7 +11,7 @@
 
 (defn format-action [action]
   (str (action :id) " "
-       (if (action :done) "x ")
+       (if (action :done) (str "x " (action :doneDate) " "))
        (if (action :priority)
          (str "(" (action :priority) ") "))
        (action :description)

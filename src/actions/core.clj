@@ -21,8 +21,11 @@
      (conj actions (assoc (new-action description priority tags contexts)
                      :id (next-id actions)))))
 
+(defn today []
+  (. (new java.text.SimpleDateFormat "yyyy-MM-dd") format (new java.util.Date)))
+
 (defn mark-done [action]
-  (assoc action :done true))
+  (assoc action :done true :doneDate (today)))
 
 (defn deprioritize-action [action]
   (dissoc action :priority))
