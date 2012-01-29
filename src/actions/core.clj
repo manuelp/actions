@@ -1,6 +1,7 @@
 (ns actions.core
   (:require :reload [actions.spitfile :as out]
-            [actions.todotxt :as todotxt]))
+            [actions.todotxt :as todotxt])
+  (:use [actions.action]))
 
 (defn save-actions [actions]
   (todotxt/write-data actions "todo.txt"))
@@ -15,19 +16,10 @@
 
 (defn add-action
   ([actions description]
-     (conj actions {:id (next-id actions)
-                    :description description
-                    :priority nil
-                    :tags []
-                    :contexts []
-                    :done false}))
+     (conj actions (assoc (new-action description) :id (next-id actions))))
   ([actions description priority tags contexts]
-     (conj actions {:id (next-id actions)
-                    :description description
-                    :priority priority
-                    :tags tags
-                    :contexts contexts
-                    :done false})))
+     (conj actions (assoc (new-action description priority tags contexts)
+                     :id (next-id actions)))))
 
 (defn mark-done [action]
   (assoc action :done true))

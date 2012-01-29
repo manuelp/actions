@@ -1,13 +1,13 @@
 (ns actions.todotxt
-  (:require [clojure.string :as str]
-            [clojure.java.io :as io]
-            [actions.core :as core]))
+  (:require [clojure.string :as s]
+   [clojure.java.io :as io])
+  (:use [actions.action]))
 
 (defn format-tags [tags]
-  (str/join " " (map #(str "+" (name %)) tags)))
+  (s/join " " (map #(str "+" (name %)) tags)))
 
 (defn format-contexts [ctxs]
-  (str/join " " (map #(str "@" %) ctxs)))
+  (s/join " " (map #(str "@" %) ctxs)))
 
 (defn format-action [action]
   (str (action :id) " "
@@ -33,7 +33,7 @@
             (sort-by :description without-p))))
 
 (defn format-actions [actions]
-  (str/join \newline
+  (s/join \newline
             (map format-action (sort-actions (filter #(not (% :done)) actions)))))
 
 (defn print-actions [actions]
@@ -55,20 +55,19 @@
 
 (defn read-action
   "Create an action from a string read using the todo.txt format."
-  [actions str]
-  (let [tokens (str/split str #"\s")]
-    (core/add-action actions
-                     str
-                     (if (priority? (first tokens))
-                       (take-priority (first tokens)))
-                     (filter project? tokens)
-                     (filter context? tokens))))
+  [str]
+  (let [tokens (s/split str #"\s")]
+    (new-action str
+                (if (priority? (first tokens))
+                  (take-priority (first tokens)))
+                (filter project? tokens)
+                (filter context? tokens))))
 
 (defn read-actions [lines]
   (loop [rem lines res []]
     (if (empty? rem)
       res
-      (recur (rest rem) (read-action res (first rem))))))
+      (recur (rest rem) (conj res (read-action (first rem)))))))
 
 (defn write-data [tasks file-name]
   (spit file-name tasks))
