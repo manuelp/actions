@@ -2,27 +2,13 @@
   (:require [clojure.string :as s]
    [clojure.java.io :as io]))
 
-(defn format-tags [tags]
-  (s/join " " (map #(str "+" (name %)) tags)))
-
-(defn format-contexts [ctxs]
-  (s/join " " (map #(str "@" %) ctxs)))
-
 (defn format-id [id]
   (if (< id 10)
     (str \0 id)
     id))
 
 (defn format-action [action]
-  (str (format-id (action :id)) " "
-       (if (action :done) (str "x " (action :doneDate) " "))
-       (if (action :priority)
-         (str "(" (action :priority) ") "))
-       (action :description)
-       (if (not (empty? (action :tags)))
-         (str " " (format-tags (action :tags))))
-       (if (not (empty? (action :contexts)))
-         (str " " (format-contexts (action :contexts))))))
+  (str (format-id (action :id)) " " (action :description)))
 
 (defn take-with-priority [actions]
   (filter #(not (nil? (:priority %))) actions))
