@@ -1,7 +1,6 @@
 (ns actions.todotxt
   (:require [clojure.string :as s]
-   [clojure.java.io :as io])
-  (:use [actions.action]))
+   [clojure.java.io :as io]))
 
 (defn format-tags [tags]
   (s/join " " (map #(str "+" (name %)) tags)))
@@ -55,19 +54,24 @@
        (= \( (first str))
        (= \) (first (rest (rest str))))))
 
-(defn take-priority [s]
-  (first (rest s)))
+(defn take-priority [token]
+  (if (priority? token)
+    (first (rest token))))
 
 (defn read-action
   "Create an action from a string read using the todo.txt format."
   [str nextid]
-  (let [tokens (s/split str #"\s")]
-    (assoc (new-action str
-                 (if (priority? (first tokens))
-                   (take-priority (first tokens)))
-                 (filter project? tokens)
-                 (filter context? tokens))
-      :id nextid)))
+  (let [tokens (s/split str #"\s")
+        action {:id nextid
+                :description str
+                :tags (filter project? tokens)
+                :contexts (filter context? tokens)}]
+    (if (= "x" (first tokens))
+      (assoc action :done true
+             :doneDate (first (rest tokens))
+             :priority (take-priority (first (rest (rest tokens)))))
+      (assoc action :done false
+             :priority (take-priority (first tokens))))))
 
 (defn read-actions [lines]
   (loop [rem lines res [] nextid 1]

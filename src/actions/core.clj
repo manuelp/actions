@@ -1,7 +1,6 @@
 (ns actions.core
   (:require :reload [actions.spitfile :as out]
-            [actions.todotxt :as todotxt])
-  (:use [actions.action]))
+            [actions.todotxt :as todotxt]))
 
 (defn save-actions [actions]
   (todotxt/write-data actions "todo.txt"))
@@ -13,6 +12,20 @@
   (if (empty? actions)
     1
     (inc (apply max (map #(:id %) actions)))))
+
+(defn new-action
+  ([description]
+     {:done false
+      :description description
+      :priority nil
+      :tags []
+      :contexts []})
+  ([description priority tags contexts]
+     {:done false
+      :description description
+      :priority priority
+      :tags tags
+      :contexts contexts}))
 
 (defn add-action
   ([actions description]
@@ -57,3 +70,4 @@
   (filter #(not (= id (% :id))) actions))
 
 (todotxt/print-actions (load-actions))
+
