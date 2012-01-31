@@ -1,6 +1,7 @@
 (ns actions.core
   (:require :reload [actions.spitfile :as out]
-            [actions.todotxt :as todotxt]))
+            [actions.todotxt :as todotxt]
+            [clojure.string :as s]))
 
 (defn save-actions
   "Save actions to the 'todo.txt' file."
@@ -93,5 +94,34 @@
   [id actions]
   (filter #(not (= id (% :id))) actions))
 
+;; Here for quick tests in the REPL
 (todotxt/print-actions (load-actions))
 
+(def valid-commands {
+                     "a" [add-action "Add a new action to the list."]
+                     "e" [edit-action "Edit and existing action."]
+                     "rm" [remove-action "Remove an existing actions from the list by id."]
+                     "p" [set-priority "Set the priority of an existing action."]
+                     "dp" [deprioritize-action "Remove priority from an action."]
+                     "do" [finish-action "Mark an existing action as done with today as completion date."]
+                     "h" [print-help "Print this help."]
+                     "ls" [todotxt/print-actions "Print a list of the actions to do on the list."]
+                     })
+
+(defn read-command [prompt]
+  (do (println prompt))
+  (s/split (read-line) #"\s"))
+
+;; TODO
+(defn set-priority [actions id priority])
+
+(defn print-help []
+  (println (s/join \newline (map #(str (key %) ": " (first (rest (val %)))) valid-commands))))
+
+(defn command-loop []
+  (let [cmd (read-command "Gimme a command, please.")]
+    (if (= "q" (first cmd))
+      (println "Bye!")
+      (do
+        (apply (first (valid-commands (first cmd))) (vec (rest cmd)))
+        (recur)))))
