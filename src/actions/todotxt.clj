@@ -7,8 +7,8 @@
     (str \0 id)
     id))
 
-(defn format-action [action]
-  (str (format-id (action :id)) " " (action :description)))
+(defn format-action [{:keys [id description]}]
+  (str (format-id id) " " description))
 
 (defn take-with-priority [actions]
   (filter #(not (nil? (:priority %))) actions))
