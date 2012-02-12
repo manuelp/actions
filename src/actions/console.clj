@@ -8,6 +8,9 @@
   (do (println prompt))
   (s/split (read-line) #"\s"))
 
+(defn parse-int [s]
+  (. Integer parseInt s))
+
 (declare print-help)
 
 (def valid-commands {
@@ -18,12 +21,17 @@
                           "Add a new action to the list."]
                      "e" [(fn [& words]
                             (save-actions
-                             (edit-action (. Integer parseInt (first words))
+                             (edit-action (parse-int (first words))
                                           (s/join \  (rest words))
                                           (load-actions))))
                           "Edit and existing action."]
-                     "rm" [print-help "Remove an existing actions from the list by id."]
-                     "p" [print-help "Set the priority of an existing action."]
+                     "rm" [(fn [& words]
+                             (save-actions (remove-action (parse-int (first words))
+                                                          (load-actions))))
+                           "Remove an existing actions from the list by id."]
+                     "p" [(fn [id priority]
+                            (save-actions (add-priority (parse-int id) priority (load-actions))))
+                          "Set the priority of an existing action."]
                      "dp" [print-help "Remove priority from an action."]
                      "do" [print-help "Mark an existing action as done with today as completion date."]
                      "h" [print-help "Print this help."]

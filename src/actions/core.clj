@@ -75,6 +75,15 @@
           %)
        actions))
 
+(defn add-priority
+  "Add or change priority of an action."
+  [id priority actions]
+  (letfn [(set-priority [p action] (assoc action :priority p))]
+    (map #(if (= (:id %) id)
+            (set-priority priority %)
+            %)
+         actions)))
+
 (defn change-description
   "Returns a new action that is a copy of the given one with a different description."
   [action new-desc]

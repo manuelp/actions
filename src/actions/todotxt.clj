@@ -7,8 +7,8 @@
     (str \0 id)
     id))
 
-(defn format-action [{:keys [id description]}]
-  (str (format-id id) " " description))
+(defn format-action [{:keys [id priority description]}]
+  (str (format-id id) " " (if priority (str "(" priority ") ")) description))
 
 (defn take-with-priority [actions]
   (filter #(not (nil? (:priority %))) actions))
@@ -48,16 +48,20 @@
   "Create an action from a string read using the todo.txt format."
   [str nextid]
   (let [tokens (s/split str #"\s")
+        is-done? (fn [tokens] (= "x" (first tokens)))
         action {:id nextid
-                :description str
                 :tags (filter project? tokens)
                 :contexts (filter context? tokens)}]
-    (if (= "x" (first tokens))
-      (assoc action :done true
-             :doneDate (first (rest tokens))
-             :priority (take-priority (first (rest (rest tokens)))))
-      (assoc action :done false
-             :priority (take-priority (first tokens))))))
+    (assoc action
+      :done (is-done? tokens)
+      :doneDate (if (is-done? tokens)
+                  (first (rest tokens)))
+      :priority (if (is-done? tokens)
+                  (take-priority (first (rest (rest tokens))))
+                  (take-priority (first tokens)))
+      :description (s/join \  (remove priority? (if (is-done? tokens)
+                                                  (rest (rest tokens))
+                                                  tokens))))))
 
 (defn read-actions [lines]
   (loop [rem lines res [] nextid 1]
@@ -65,8 +69,13 @@
       res
       (recur (rest rem) (conj res (read-action (first rem) nextid)) (inc nextid)))))
 
+(defn write-action [task]
+  (str (if (:done task) (str "x " (:doneDate task) " "))
+       (if (:priority task) (str "(" (:priority task) ") "))
+       (:description task)))
+
 (defn write-data [tasks file-name]
-  (spit file-name (s/join \newline (map #(get % :description) tasks))))
+  (spit file-name (s/join \newline (map write-action tasks))))
 
 (defn read-data [file-name]
   (with-open [rdr (io/reader file-name)]
