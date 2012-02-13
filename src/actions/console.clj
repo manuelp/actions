@@ -13,6 +13,9 @@
 
 (declare print-help)
 
+(defn filter-actions [actions words]
+  (remove #(nil? (some (set words) (s/split (:description %) #"\s"))) actions))
+
 (def valid-commands {
                      "a" ["Add a new action to the list."
                           (fn [& words] (save-actions
@@ -39,7 +42,7 @@
                            (fn [id] (save-actions (finish-action (parse-int id) (load-actions))))]
                      "h" ["Print this help." print-help]
                      "ls" ["Print a list of the actions to do on the list."
-                           (fn [] (todotxt/print-actions (load-actions)))]
+                           (fn [& words] (todotxt/print-actions (filter-actions (load-actions) words)))]
                      })
 
 (defn print-help []
