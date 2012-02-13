@@ -32,8 +32,11 @@
                      "p" [(fn [id priority]
                             (save-actions (add-priority (parse-int id) priority (load-actions))))
                           "Set the priority of an existing action."]
-                     "dp" [print-help "Remove priority from an action."]
-                     "do" [print-help "Mark an existing action as done with today as completion date."]
+                     "dp" [(fn [id]
+                             (save-actions (deprioritize (parse-int id) (load-actions))))
+                           "Remove priority from an action."]
+                     "do" [(fn [id] (save-actions (finish-action (parse-int id) (load-actions))))
+                           "Mark an existing action as done with today as completion date."]
                      "h" [print-help "Print this help."]
                      "ls" [(fn [] (todotxt/print-actions (load-actions)))
                            "Print a list of the actions to do on the list."]
