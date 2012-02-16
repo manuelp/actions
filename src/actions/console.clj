@@ -2,7 +2,8 @@
   (:use [actions.core])
   (:require [clojure.string :as s]
             [actions.todotxt :as todotxt])
-  (:import java.lang.Integer))
+  (:import java.lang.Integer)
+  (:gen-class))
 
 (defn read-command [prompt]
   (do (println prompt))
@@ -62,4 +63,8 @@
         (apply (first (rest (valid-commands (first cmd)))) (vec (rest cmd)))
         (recur)))))
 
-(command-loop)
+;;(command-loop)
+
+(defn -main []
+  (command-loop))
+
