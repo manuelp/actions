@@ -1,10 +1,19 @@
 # actions
+This project is a little to-do list manager written in [Clojure](http://clojure.org). It's designed as:
 
-This project is a set of [Clojure](http://clojure.org) functions useful to manage... actions (or to-do items) without much fuss.
+- A CLI interface to manage a to-do list in a flat [todo.txt](https://github.com/ginatrapani/todo.txt-cli/wiki/The-Todo.txt-Format) file format.
+- An API to manage to-do items.
 
 ## Usage
 
-*Coming soon...*
+Just run the start file and start to manage your *todo.txt* file. Use the **h** command to get a short help with a list of all possible commands. Note that **you need to have a todo.txt file in the directory where you run the jar file**.
+
+## How to compile
+Simply use [Leiningen](https://github.com/technomancy/leiningen) to create a "batteries included" JAR file:
+
+```
+lein uberjar
+```
 
 ## License
 
