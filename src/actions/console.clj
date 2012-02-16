@@ -12,8 +12,6 @@
 (defn parse-int [s]
   (. Integer parseInt s))
 
-(declare print-help)
-
 (defn filter-actions [actions words]
   (letfn [(contains-chunk? [chunk desc]
             (not (nil? (re-seq (re-pattern (str ".*" chunk ".*")) desc))))
@@ -22,6 +20,11 @@
     (if (not (nil? words))
       (filter #(matches-chunkes? words (:description %)) actions)
       actions)))
+
+(declare valid-commands)
+
+(defn print-help []
+  (println (s/join \newline (map #(str (key %) ": " (first (val %))) valid-commands))))
 
 (def valid-commands {
                      "a" ["Add a new action to the list."
@@ -51,9 +54,6 @@
                      "ls" ["Print a list of the actions to do on the list."
                            (fn [& words] (todotxt/print-actions (filter-actions (load-actions) words)))]
                      })
-
-(defn print-help []
-  (println (s/join \newline (map #(str (key %) ": " (first (val %))) valid-commands))))
 
 (defn command-loop []
   (let [cmd (read-command "Gimme a command, please.")]
