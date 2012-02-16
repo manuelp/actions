@@ -14,7 +14,13 @@
 (declare print-help)
 
 (defn filter-actions [actions words]
-  (remove #(nil? (some (set words) (s/split (:description %) #"\s"))) actions))
+  (letfn [(contains-chunk? [chunk desc]
+            (not (nil? (re-seq (re-pattern (str ".*" chunk ".*")) desc))))
+          (matches-chunkes? [chunkes desc]
+            (reduce #(and %1 %2) (map #(contains-chunk? % desc) chunkes)))]
+    (if (not (nil? words))
+      (filter #(matches-chunkes? words (:description %)) actions)
+      actions)))
 
 (def valid-commands {
                      "a" ["Add a new action to the list."
