@@ -6,8 +6,9 @@
   (:gen-class))
 
 (defn read-command [prompt]
-  (do (println prompt))
-  (s/split (read-line) #"\s"))
+  (do (println "----------")
+      (println prompt)
+      (s/split (read-line) #"\s")))
 
 (defn parse-int [s]
   (. Integer parseInt s))
