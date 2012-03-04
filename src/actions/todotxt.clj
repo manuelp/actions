@@ -1,6 +1,7 @@
 (ns actions.todotxt
+  (:use [colorize.core])
   (:require [clojure.string :as s]
-   [clojure.java.io :as io]))
+            [clojure.java.io :as io]))
 
 (defn sort-actions [actions]
   (let [with-p (filter #(not (nil? (:priority %))) actions)
@@ -8,13 +9,23 @@
     (concat (sort-by #(vec (map % [:priority :description])) with-p)
             (sort-by :description without-p))))
 
+(defn colorize-action [string priority]
+  (cond (= priority \A) (red string)
+        (= priority \B) (yellow string)
+        (= priority \C) (blue string)
+        (= priority \D) (green string)
+        :default (cyan string)))
+
 (defn format-actions [actions]
   (letfn [(format-id [id]
             (if (< id 10)
               (str \0 id)
               id))
           (format-action [{:keys [id priority description]}]
-            (str (format-id id) " " (if priority (str "(" priority ") ")) description))]
+            (let [res (str (format-id id) " " (if priority (str "(" priority ") ")) description)]
+              (if priority
+                (colorize-action res priority)
+                res)))]
     (s/join \newline
            (map format-action (sort-actions (filter #(not (% :done)) actions))))))
 

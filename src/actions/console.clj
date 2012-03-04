@@ -1,5 +1,6 @@
 (ns actions.console
-  (:use [actions.core])
+  (:use [actions.core]
+        [colorize.core])
   (:require [clojure.string :as s]
             [actions.todotxt :as todotxt])
   (:import java.lang.Integer)
@@ -25,7 +26,7 @@
 (declare valid-commands)
 
 (defn print-help []
-  (println (s/join \newline (map #(str (key %) ": " (first (val %))) valid-commands))))
+  (println (s/join \newline (map #(str (green (key %)) ": " (first (val %))) valid-commands))))
 
 (def valid-commands {
                      "a" ["Add a new action to the list."
