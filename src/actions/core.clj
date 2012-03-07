@@ -1,3 +1,8 @@
+;; I developed this todo list manager (a classic pet-project) as an
+;; exercise. It's my first real (albeit small) application written in
+;; Clojure, so I understad it's suboptimal code.
+;;
+;; However, here is the code!
 (ns actions.core
   (:require :reload [actions.spitfile :as out]
             [actions.todotxt :as todotxt]
