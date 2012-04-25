@@ -1,3 +1,5 @@
+**ATTENTION!** This project's new home is on [GitHub](https://github.com/manuelp/actions)
+
 # actions
 This project is a little to-do list manager written in [Clojure](http://clojure.org). It's designed as:
 
